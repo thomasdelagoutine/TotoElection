@@ -1,0 +1,25 @@
+<html ng-app="ovrApp">
+<head>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    <script src="app.js"></script>
+    <script src="controller.js"></script>
+    <script src="candidateFactory.js"></script>
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="css/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap-theme.css">
+</head>
+<body class="cd-body" ng-controller="mainCtrl">
+<div class="col-xs-18 col-md-12 cd-header">
+    <div class="col-md-3 "></div>
+    <h1 class="col-md-6 elec-welcome cd-header-title">Les Elections Présidentielles 2017</h1>
+    <div class="col-md-3"><span class="elec-deco">
+        <a style="pointer-events: none; color: white">Déconnexion</a>
+    </span></div>
+    <div class="col-md-12 ">Bienvenue {{name}}</div>
+</div>
+<div ng-view></div>
+</body>
+</html>
