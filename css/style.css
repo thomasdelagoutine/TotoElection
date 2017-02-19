@@ -22,6 +22,11 @@
     height: 50px;
 }
 
+.elec-inscription{
+    margin-top: 5%;
+    color: white;
+}
+
 .elec-deco{
     padding: 5px;
     position: fixed;

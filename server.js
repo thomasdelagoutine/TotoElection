@@ -82,5 +82,29 @@ app.post('/login', function (req, res) {
         }
 
     });
+});
+
+app.post('/addUser', function (req, res) {
+    console.log(req.body);
+    var login = req.body.login;
+    var password = req.body.password;
+    var name = req.body.name;
+    var surname = req.body.surname;
+    var email = req.body.email;
+    var requete = "SELECT * FROM user where login='"+login+"';"
+    db.query(requete, function(err, requete)
+    {
+        if (requete.length == 0) {
+            var requete2 = "INSERT INTO user VALUES('"+login+"','"+password+"','"+name+"','"+surname+"','"+email+"');";
+            db.query(requete2, function(err, requete2) {
+                console.log(requete2);
+            });
+        }
+        else if (nbrligne==1)
+        {
+            console.log('Identifiant deja existant');
+        }
+
+    });
 
 });

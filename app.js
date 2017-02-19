@@ -5,7 +5,7 @@ var app = angular.module('ovrApp', ['ngRoute']);
 
 app.config(['$routeProvider',
     function($routeProvider) {
-
+            
         // Système de routage
         $routeProvider
             .when('/home', {
@@ -15,6 +15,10 @@ app.config(['$routeProvider',
             .when('/connexion', {
                 templateUrl: 'views/connexion.html',
                 controller: 'authController'
+            })
+            .when('/inscription', {
+                templateUrl: 'views/inscription.html',
+                controller: 'inscriptionController'
             })
             .otherwise({
                 redirectTo: '/connexion'
