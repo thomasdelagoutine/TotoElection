@@ -27,6 +27,14 @@
     color: white;
 }
 
+.elec-info-danger{
+    opacity: 1;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 12pt;
+    background: var(--elec-red);
+}
+
 .elec-deco{
     padding: 5px;
     position: fixed;

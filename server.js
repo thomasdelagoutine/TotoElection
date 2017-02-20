@@ -11,6 +11,7 @@ var bodyParser = require('body-parser')
 var app = express();
 var port = 8087;
 var server = http.createServer(app);
+server.listen(port);
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -30,7 +31,17 @@ db.connect(function (err) {
 
     console.log('Connecte sur la BDD en tant que numero ' + db.threadId);
 });
-server.listen(port);
+
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
 
 app.get("/getAllCandidates", function (req, res) {
     console.log("Demande des candidats");
@@ -63,8 +74,8 @@ app.post('/login', function (req, res) {
         if (requete.length == 0) {
             console.log('Mauvais login');
             var user = {
-                name: requete[0].name,
-                surname: requete[0].surname
+                name: "",
+                surname: ""
             };
             result.user = user;
             result.status = 403;
@@ -92,19 +103,32 @@ app.post('/addUser', function (req, res) {
     var surname = req.body.surname;
     var email = req.body.email;
     var requete = "SELECT * FROM user where login='"+login+"';"
+    console.log(requete);
     db.query(requete, function(err, requete)
     {
         if (requete.length == 0) {
-            var requete2 = "INSERT INTO user VALUES('"+login+"','"+password+"','"+name+"','"+surname+"','"+email+"');";
+            var id = guid();
+            var requete2 = "INSERT INTO user VALUES('"+id+"','"+login+"','"+password+"','"+name+"','"+surname+"','"+email+"');";
+            console.log(requete2);
             db.query(requete2, function(err, requete2) {
-                console.log(requete2);
+                if (requete.length == 0) {
+                    console.log("OK");
+                    console.log(requete2);
+                    res.send(200);
+                }
+                else if (requete.length == 1) {
+                    res.send(500);
+                }
+
             });
         }
-        else if (nbrligne==1)
+        else if (requete.length==1)
         {
             console.log('Identifiant deja existant');
+            res.send(409);
         }
 
     });
 
 });
+

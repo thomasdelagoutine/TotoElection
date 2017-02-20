@@ -72,8 +72,40 @@ app.controller('authController', ['$scope', '$rootScope', '$http', '$location',
 
 app.controller('inscriptionController', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location) {
-        $scope.inscription = function (){
-            
+        $scope.inscriptionError = "";
+        $scope.inscrire= function () {
+            if ($scope.login == "" || $scope.name == "" || $scope.surname == "" || $scope.email == "" ||
+                $scope.password == "" || $scope.password2 == "") {
+                $scope.inscriptionError = "Renseignez tous les champs";
+            }
+            else {
+                var req = {
+                    method: 'POST',
+                    url: '/addUser',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        login: $scope.login,
+                        password: $scope.password,
+                        name: $scope.name,
+                        surname: $scope.surname,
+                        email: $scope.email
+                    }
+                };
+                $http(req).then(function (response) {
+                    if (response.status == 200){
+                        $scope.inscriptionError = "Ajouté";
+                        $location.path("/connexion");
+                    }
+                }, function (response) {
+                    console.log(response);
+                    if (response.status == 409){
+                        $scope.inscriptionError = "Ne sois pas un escroc comme les gens présents ici, cet utilisateur existe déja !";
+                    }
+                });
+            }
+
         }
 
     }
