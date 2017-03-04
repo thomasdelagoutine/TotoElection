@@ -9,6 +9,7 @@
 
 .cd-header{
     background: var(--elec-blue);
+    position: fixed;
     /*background: var(--elec-blue); !* For browsers that do not support gradients *!*/
     /*background: -webkit-linear-gradient(var(--elec-blue),var(--elec-white), var(--elec-red)); !* For Safari 5.1 to 6.0 *!*/
     /*background: -o-linear-gradient(var(--elec-blue), var(--elec-white), var(--elec-red)); !* For Opera 11.1 to 12.0 *!*/

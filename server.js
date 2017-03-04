@@ -38,6 +38,7 @@ function guid() {
             .toString(16)
             .substring(1);
     }
+
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
         s4() + '-' + s4() + s4() + s4();
 }
@@ -46,23 +47,49 @@ function guid() {
 app.get("/getAllCandidates", function (req, res) {
     console.log("Demande des candidats");
     var candidats = [];
-    //On selectionne les informations concernant les candidats
+    //On selectionne les informations concernant les candidats et on associe le pourcentage à chacun
     var requete = "SELECT * FROM candidat;";
+    var pourcentage = "";
     db.query(requete, function (err, requete) {
         requete.forEach(function (ligne) {
+            var requetePourcentage = "SELECT pourcentage FROM vote where idCandidat='" + ligne.idCandidat + "';";
+            console.log(requetePourcentage);
             var candidat = {
+                id: ligne.idCandidat,
                 nom: ligne.nom,
                 partie: ligne.parti,
-                pourcentage: ligne.pourcentage,
+                pourcentage: pourcentage,
                 lienPhoto: ligne.lienPhoto,
                 lienPhotoParti: ligne.lienPhotoParti
             };
-            console.log("Candidat " + candidat.nom + " ajouté");
+            console.log("Candidat " + candidat + " ajouté");
             candidats.push(candidat);
         });
         res.send(candidats);
     });
+
 });
+
+app.post("/getAllPourcentages", function (req, res) {
+    console.log("Demande des pourcentages");
+    var pourcentage = [];
+    var idUser = req.body.idUser;
+    console.log(req.headers);
+    var requetePourcentage = "SELECT * FROM vote where idUser='" + idUser + "';";
+    console.log(requetePourcentage);
+    db.query(requetePourcentage, function (err, requete) {
+        requete.forEach(function (ligne) {
+            console.log(ligne);
+            var vote = {
+                idCandidat: ligne.idCandidat,
+                pourcentage: ligne.pourcentage
+            };
+            pourcentage.push(vote);
+        });
+        res.send(pourcentage);
+    });
+});
+
 
 app.post('/login', function (req, res) {
     console.log(req.body);
@@ -85,7 +112,8 @@ app.post('/login', function (req, res) {
         else if (requete.length == 1) {
             var user = {
                 name: requete[0].name,
-                surname: requete[0].surname
+                surname: requete[0].surname,
+                idUser : requete[0].idUser
             };
             result.status = 200;
             result.user = user;
@@ -102,28 +130,51 @@ app.post('/addUser', function (req, res) {
     var name = req.body.name;
     var surname = req.body.surname;
     var email = req.body.email;
-    var requete = "SELECT * FROM user where login='"+login+"';"
+    var requete = "SELECT * FROM user where login='" + login + "';"
     console.log(requete);
-    db.query(requete, function(err, requete)
-    {
+    db.query(requete, function (err, requete) {
+        //Insertion des informations utilisateurs
         if (requete.length == 0) {
             var id = guid();
-            var requete2 = "INSERT INTO user VALUES('"+id+"','"+login+"','"+password+"','"+name+"','"+surname+"','"+email+"');";
+            var requete2 = "INSERT INTO user VALUES('" + id + "','" + login + "','" + password + "','" + name + "','" + surname + "','" + email + "');";
             console.log(requete2);
-            db.query(requete2, function(err, requete2) {
-                if (requete.length == 0) {
+            db.query(requete2, function (err, requete2) {
+                if (requete2.length == 0) {
                     console.log("OK");
                     console.log(requete2);
-                    res.send(200);
+
                 }
-                else if (requete.length == 1) {
+                else if (requete2.length == 1) {
                     res.send(500);
                 }
-
             });
+            //Insertion des votes, par defaut 0 à chaque candidat
+            var id2 = "";
+            var pourcentage = 0;
+            var requete3 = "";
+            var error = false;
+            for (var i = 1; i < 10; i++) {
+                id2 = guid();
+                requete3 = "INSERT INTO vote VALUES ('" + id2 + "','" + pourcentage + "','" + i + "','" + id + "');"
+                console.log(requete3);
+                db.query(requete3, function (err, requete3) {
+                    if (requete3.length == 0) {
+                        error = false;
+                    }
+                    else if (requete3.length == 1) {
+                        error = true;
+                    }
+                });
+            }
+            if (error) {
+                res.send(500);
+            }
+            else {
+                res.send(200);
+            }
+
         }
-        else if (requete.length==1)
-        {
+        else if (requete.length == 1) {
             console.log('Identifiant deja existant');
             res.send(409);
         }

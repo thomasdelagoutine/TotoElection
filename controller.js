@@ -11,6 +11,7 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
             $location.path("/connexion");
         }
         $scope.candidates = [];
+        $scope.votes = [];
         $http({
             method: 'GET',
             url: '/getAllCandidates'
@@ -19,7 +20,32 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.candidates.push(aCandidate);
             });
         }, function errorCallback(response) {
-            console.log("Impossible d'avoir les candidats, merde c'est la fin de la démoncratie");
+            console.log("Impossible d'avoir les candidats, merde c'est la fin de la démocratie");
+        });
+
+        var req = {
+            method: 'POST',
+            url: '/getAllPourcentages',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                idUser: localStorage.idUser
+            }
+        };
+
+
+        $http(req).then(function successCallBack(response) {
+            response.data.forEach(function (aVote) {
+                $scope.votes.push(aVote);
+                $scope.candidates.forEach(function (aCandidat) {
+                    if (aCandidat.id === aVote.idCandidat) {
+                        aCandidat.pourcentage = aVote.pourcentage;
+                    }
+                })
+            })
+        }, function errorCallback(response) {
+            console.log("Impossible d'avoir les candidats, merde c'est la fin de la démocratie");
         });
 
 
@@ -29,6 +55,7 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
             localStorage.removeItem("name");
             localStorage.removeItem("surname");
             localStorage.removeItem("login");
+            localStorage.removeItem("idUser");
             $location.path("/connexion");
         }
 
@@ -56,7 +83,9 @@ app.controller('authController', ['$scope', '$rootScope', '$http', '$location',
                 console.log(response.data);
                 $rootScope.name = response.data.user.name;
                 $rootScope.surname = response.data.user.surname;
+                $rootScope.idUser = response.data.user.idUser;
                 localStorage.setItem("login", $scope.login);
+                localStorage.setItem("idUser", response.data.user.idUser);
                 $location.path("/home");
 
             }, function (response) {
@@ -73,7 +102,7 @@ app.controller('authController', ['$scope', '$rootScope', '$http', '$location',
 app.controller('inscriptionController', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location) {
         $scope.inscriptionError = "";
-        $scope.inscrire= function () {
+        $scope.inscrire = function () {
             if ($scope.login == "" || $scope.name == "" || $scope.surname == "" || $scope.email == "" ||
                 $scope.password == "" || $scope.password2 == "") {
                 $scope.inscriptionError = "Renseignez tous les champs";
@@ -94,13 +123,13 @@ app.controller('inscriptionController', ['$scope', '$rootScope', '$http', '$loca
                     }
                 };
                 $http(req).then(function (response) {
-                    if (response.status == 200){
+                    if (response.status == 200) {
                         $scope.inscriptionError = "Ajouté";
                         $location.path("/connexion");
                     }
                 }, function (response) {
                     console.log(response);
-                    if (response.status == 409){
+                    if (response.status == 409) {
                         $scope.inscriptionError = "Ne sois pas un escroc comme les gens présents ici, cet utilisateur existe déja !";
                     }
                 });
