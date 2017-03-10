@@ -5,6 +5,7 @@
 app.run(function ($rootScope) {
 
 });
+
 app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location) {
         if (localStorage.login == null) {
@@ -12,6 +13,8 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
         $scope.candidates = [];
         $scope.votes = [];
+        $scope.labelsDonut = [];
+        $scope.dataDonut = [];
         $http({
             method: 'GET',
             url: '/getAllCandidates'
@@ -19,37 +22,46 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
             response.data.forEach(function (aCandidate) {
                 $scope.candidates.push(aCandidate);
             });
-        }, function errorCallback(response) {
-            console.log("Impossible d'avoir les candidats, merde c'est la fin de la démocratie");
-        });
+            var req2 = {
+                method: 'POST',
+                url: '/getAllPourcentages',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    idUser: localStorage.idUser
+                }
+            };
 
-        var req = {
-            method: 'POST',
-            url: '/getAllPourcentages',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                idUser: localStorage.idUser
-            }
-        };
+            $http(req2).then(function successCallBack(response) {
+                response.data.forEach(function (aVote) {
+                    $scope.votes.push(aVote);
+                    $scope.candidates.forEach(function (aCandidat) {
+                        if (aCandidat.id === aVote.idCandidat) {
+                            aCandidat.pourcentage = aVote.pourcentage;
 
-
-        $http(req).then(function successCallBack(response) {
-            response.data.forEach(function (aVote) {
-                $scope.votes.push(aVote);
-                $scope.candidates.forEach(function (aCandidat) {
-                    if (aCandidat.id === aVote.idCandidat) {
-                        aCandidat.pourcentage = aVote.pourcentage;
-                    }
+                        }
+                    })
+                });
+                $scope.candidates.forEach(function (aCandidate2) {
+                    $scope.labelsDonut.push(aCandidate2.nom);
+                    $scope.dataDonut.push(aCandidate2.pourcentage);
                 })
-            })
+            }, function errorCallback(response) {
+                console.log("Impossible d'avoir les votes, merde c'est la fin de la démocratie");
+            });
+
         }, function errorCallback(response) {
             console.log("Impossible d'avoir les candidats, merde c'est la fin de la démocratie");
         });
 
 
         $scope.name = $rootScope.name;
+
+        $scope.changePourcentage = function (aCandidat) {
+            $scope.dataDonut[parseInt(aCandidat.id) - 1] = aCandidat.pourcentage;
+        };
+
 
         $scope.deco = function () {
             localStorage.removeItem("name");

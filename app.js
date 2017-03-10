@@ -1,7 +1,7 @@
 /**
  * Created by Thomas on 17/06/2016.
  */
-var app = angular.module('ovrApp', ['ngRoute']);
+var app = angular.module('ovrApp', ['ngRoute','chart.js']);
 
 app.config(['$routeProvider',
     function($routeProvider) {

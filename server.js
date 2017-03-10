@@ -150,7 +150,7 @@ app.post('/addUser', function (req, res) {
             });
             //Insertion des votes, par defaut 0 à chaque candidat
             var id2 = "";
-            var pourcentage = 0;
+            var pourcentage = 10;
             var requete3 = "";
             var error = false;
             for (var i = 1; i < 10; i++) {

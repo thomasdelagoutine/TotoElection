@@ -1,20 +1,27 @@
 <div class="col-md-12 elec-body">
 
-    <div class="col-md-5 elec-panel" >
-        <div class="col-md-12 elec-list-candidate" ng-repeat="candidat in candidates | orderBy : candidat.pourcentage">
-            <div class="col-md-5 candidate-name"><h4>{{candidat.nom}}</h4></div>
-            <div class="col-md-3 candidate-name"><h4>{{candidat.pourcentage}}%</h4></div>
-            <div class="col-md-2"><img src="{{candidat.lienPhoto}}" class="image-profile"></div>
-            <div class="col-md-2"><img src="{{candidat.lienPhotoParti}}" class="image-parti"></div>
+    <div class="col-md-5 elec-panel">
+        <div class="col-md-12 elec-list-candidate">
+            <canvas id="doughnut" class="chart chart-doughnut donut"
+                    chart-data="dataDonut" chart-labels="labelsDonut">
+            </canvas>
+            <!--<div class="col-md-5 candidate-name"><h4>{{candidat.nom}}</h4></div>-->
+            <!--<div class="col-md-3 candidate-name"><h4>{{candidat.pourcentage}}%</h4></div>-->
+            <!--<div class="col-md-2"><img src="{{candidat.lienPhoto}}" class="image-profile"></div>-->
+            <!--<div class="col-md-2"><img src="{{candidat.lienPhotoParti}}" class="image-parti"></div>-->
         </div>
     </div>
     <div class="col-md-2"></div>
     <div class="col-md-5 elec-panel">
-        <div class="col-md-4 candidate-edit" ng-repeat="candidat in candidates">
+        <div class="col-md-4 candidate-edit" ng-model="candidates" ng-repeat="candidat in candidates">
             <p class="col-md-12">{{candidat.nom}}</p>
             <img src="{{candidat.lienPhoto}}" class=" image-profile image-profile-edit ">
-            <input value="{{candidat.pourcentage}}" class="col-md-6 col-md-offset-3" type="number" min="0" max="100">
+            <input ng-model="candidat.pourcentage" ng-change="changePourcentage(candidat)"  class="col-md-6  col-md-offset-3" type="number" min="0" max="100">
+
         </div>
+
     </div>
+
 </div>
-<div class="col-md-12 elec-footer"><span class="elec-vote-button"><a style="pointer-events: none; color: white">JE VOTE !</a></span></div>
+<div class="col-md-12 elec-footer"><span class="elec-vote-button"><a style="pointer-events: none; color: white">JE VOTE !</a></span>
+</div>
