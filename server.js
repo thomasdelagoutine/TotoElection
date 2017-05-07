@@ -60,7 +60,8 @@ app.get("/getAllCandidates", function (req, res) {
                 partie: ligne.parti,
                 pourcentage: pourcentage,
                 lienPhoto: ligne.lienPhoto,
-                lienPhotoParti: ligne.lienPhotoParti
+                lienPhotoParti: ligne.lienPhotoParti,
+                lienSon: ligne.lienSon
             };
             console.log("Candidat " + candidat + " ajouté");
             candidats.push(candidat);
@@ -98,7 +99,8 @@ app.post('/login', function (req, res) {
     var requete = "SELECT * FROM user where login='" + login + "' && password='" + password + "';";
     var result = {};
     db.query(requete, function (err, requete) {
-        if (requete.length == 0) {
+        console.log(requete.length);
+        if (requete.length === 0) {
             console.log('Mauvais login');
             var user = {
                 name: "",
@@ -153,7 +155,7 @@ app.post('/addUser', function (req, res) {
             var pourcentage = 10;
             var requete3 = "";
             var error = false;
-            for (var i = 1; i < 10; i++) {
+            for (var i = 1; i < 12; i++) {
                 id2 = guid();
                 requete3 = "INSERT INTO vote VALUES ('" + id2 + "','" + pourcentage + "','" + i + "','" + id + "');"
                 console.log(requete3);

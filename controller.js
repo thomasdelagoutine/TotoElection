@@ -6,7 +6,19 @@ app.run(function ($rootScope) {
 
 });
 
-app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
+
+app.controller('mainCtrl', ['$scope', '$location',
+    function ($scope, $location) {
+        $scope.deco = function () {
+            localStorage.removeItem("name");
+            localStorage.removeItem("surname");
+            localStorage.removeItem("login");
+            localStorage.removeItem("idUser");
+            $location.path("/connexion");
+        }
+    }]);
+
+app.controller('dashBoardController', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location) {
         if (localStorage.login == null) {
             $location.path("/connexion");
@@ -15,6 +27,7 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.votes = [];
         $scope.labelsDonut = [];
         $scope.dataDonut = [];
+        $scope.currentcandidatLink = "img/cocarde.png";
         $http({
             method: 'GET',
             url: '/getAllCandidates'
@@ -60,6 +73,11 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         $scope.changePourcentage = function (aCandidat) {
             $scope.dataDonut[parseInt(aCandidat.id) - 1] = aCandidat.pourcentage;
+            $scope.currentcandidatLink = aCandidat.lienPhoto;
+        };
+
+        $scope.playSon = function () {
+            
         };
 
 
@@ -71,7 +89,9 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
             $location.path("/connexion");
         }
 
-    }]);
+    }
+]);
+
 
 app.controller('authController', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location) {
@@ -90,15 +110,19 @@ app.controller('authController', ['$scope', '$rootScope', '$http', '$location',
                     password: $scope.password
                 }
             };
-
             $http(req).then(function (response) {
-                console.log(response.data);
-                $rootScope.name = response.data.user.name;
-                $rootScope.surname = response.data.user.surname;
-                $rootScope.idUser = response.data.user.idUser;
-                localStorage.setItem("login", $scope.login);
-                localStorage.setItem("idUser", response.data.user.idUser);
-                $location.path("/home");
+                if (response.data.status === 200) {
+                    console.log(response.data);
+                    $rootScope.name = response.data.user.name;
+                    $rootScope.surname = response.data.user.surname;
+                    $rootScope.idUser = response.data.user.idUser;
+                    localStorage.setItem("login", $scope.login);
+                    localStorage.setItem("idUser", response.data.user.idUser);
+                    $location.path("/home");
+                }
+                else {
+                    $location.path("/connexion");
+                }
 
             }, function (response) {
                 console.log(response);

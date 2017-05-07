@@ -1,4 +1,4 @@
-<html ng-app="ovrApp">
+<html ng-app="ovrApp" xmlns="http://www.w3.org/1999/html">
 <head>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-route.min.js"></script>
@@ -9,6 +9,7 @@
     <script src="css/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <script src="node_modules/chart.js/dist/Chart.min.js"></script>
     <script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
+    <script src="node_modules/angular-audio/app/angular.audio.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap-theme.css">
@@ -22,7 +23,6 @@
     <div class="col-md-3"><span class="elec-deco" ng-click="deco()">
         <a style="pointer-events: none; color: white">Déconnexion</a>
     </span></div>
-    <div class="col-md-12 ">Bienvenue {{name}}</div>
 </div>
 <div ng-view></div>
 </body>
